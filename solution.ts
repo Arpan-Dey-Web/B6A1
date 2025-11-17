@@ -66,6 +66,10 @@ function printBookDetails(value: Book): string {
     return `Title: ${title}, Author: ${author}, Published: ${publishedYear}, Available: ${isAvailable ? "Yes" : "No"}`;
 }
 
+
+
+
+
 type stringOrNumber = string | number;
 
 function getUniqueValues(arr1: stringOrNumber[], arr2: stringOrNumber[]): stringOrNumber[] {
@@ -104,9 +108,6 @@ function getUniqueValues(arr1: stringOrNumber[], arr2: stringOrNumber[]): string
 
     return result;
 }
-
-
-console.log(getUniqueValues([1,2,3,4,5,6], [5,6,7,8,9,5,3,2]));
 
 
 
