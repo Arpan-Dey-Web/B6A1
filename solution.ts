@@ -67,10 +67,14 @@ function printBookDetails(value: Book): string {
 }
 
 
-function getUniqueValues(arr1: (string | number)[], arr2: (string | number)[]): (string | number)[] {
-    const result: (string | number)[] = [];
+function getUniqueValues(
+    arr1: (string | number)[],
+    arr2: (string | number)[]
+): (string | number)[] {
 
+    let result: (string | number)[] = [];
 
+    
     for (let i = 0; i < arr1.length; i++) {
         const value = arr1[i];
         let exists = false;
@@ -83,11 +87,11 @@ function getUniqueValues(arr1: (string | number)[], arr2: (string | number)[]): 
         }
 
         if (!exists) {
-            result.push(value);
+            result = [...result, value];  
         }
     }
 
-
+  
     for (let i = 0; i < arr2.length; i++) {
         const value = arr2[i];
         let exists = false;
@@ -100,12 +104,13 @@ function getUniqueValues(arr1: (string | number)[], arr2: (string | number)[]): 
         }
 
         if (!exists) {
-            result.push(value);
+            result = [...result, value];
         }
     }
 
     return result;
 }
+
 
 
 
