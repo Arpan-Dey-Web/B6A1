@@ -1,19 +1,12 @@
-✍️ Blog Post (Bangla)
+TypeScript Deep Dive – Blog Post (Bangla)
+🟦 1️⃣ Interface বনাম Type – পার্থক্য (TypeScript)
 
-নীচে দেওয়া ২টি টপিকের উপর বিস্তারিত ব্লগ লেখা হলো।
+TypeScript-এ interface এবং type alias—দুটোই object structure নির্ধারণের জন্য ব্যবহৃত হয়। কিন্তু এদের ক্ষমতা, ব্যবহারক্ষেত্র এবং flexibility ভিন্ন।
 
-1️⃣ Interface এবং Type এর মধ্যে পার্থক্য — TypeScript এ
+নিচে বিস্তারিতভাবে পার্থক্য ব্যাখ্যা করা হলো।
 
-TypeScript-এ interface এবং type alias—দুটিই অবজেক্টের স্ট্রাকচার নির্ধারণের জন্য ব্যবহৃত হয়। তবে এদের মধ্যে কিছু গুরুত্বপূর্ণ পার্থক্য আছে, যা সঠিক পরিস্থিতিতে সঠিকভাবে ব্যবহার করা জরুরি।
-
-✔️ 1. Extension / Inheritance
-
-interface সহজ সিনট্যাক্সে extend করা যায়।
-
-type intersection (&) ব্যবহার করে extend করতে হয়।
-
-উদাহরণ:
-
+🔹 Extension / Inheritance
+Interface → সহজভাবে extends ব্যবহার করে
 interface User {
   name: string;
 }
@@ -22,6 +15,7 @@ interface Admin extends User {
   role: string;
 }
 
+Type → intersection (&) ব্যবহার করে
 type UserType = {
   name: string;
 };
@@ -30,13 +24,13 @@ type AdminType = UserType & {
   role: string;
 };
 
-✔️ 2. Declaration Merging
 
-interface multiple declaration merging সাপোর্ট করে।
+✔ Interface inheritance বেশি readable
+✔ Type intersection আরও flexible
 
-type merging সাপোর্ট করে না।
+🔹 Declaration Merging (Only for Interface)
 
-উদাহরণ:
+Interface একাধিকবার ডিক্লেয়ার করলে TypeScript স্বয়ংক্রিয়ভাবে merge করে।
 
 interface Person {
   name: string;
@@ -47,39 +41,83 @@ interface Person {
 }
 
 
-ফলাফল:
+Result:
 
-{ name: string; age: number }
+// { name: string; age: number }
 
-✔️ 3. Usage Flexibility
 
-type union, tuple, primitive type—সব ধরনের value shape করার জন্য ব্যবহার করা যায়।
+❌ Type alias কখনো merge হয় না।
 
-interface object structure-এর জন্য উপযুক্ত।
+🔹 Usage Flexibility
+Type alias বেশি flexible:
 
-type ID = string | number; // type দিয়ে সম্ভব
+*primitive
+*union
+*tuple
+*function type
+*template literal type
+*mapped type
 
-✔️ সংক্ষেপে
+সবকিছুতেই ব্যবহার করা যায়।
 
-interface → object structure, declarative style, extend-friendly
+type ID = string | number;
+type Pair = [string, number];
 
-type → flexible, union, intersection, advanced transformations
+Interface → শুধুমাত্র object structure-এর জন্য বেশি উপযোগী
+interface User {
+  name: string;
+  age: number;
+}
 
-2️⃣ any, unknown এবং never – এদের মধ্যে পার্থক্য
+🔹 Mapped / Computed Types (Only Type)
+type ReadOnly<T> = {
+  readonly [K in keyof T]: T[K];
+};
 
-TypeScript-এ এই তিনটি টাইপ তিনটি আলাদা উদ্দেশ্যে ব্যবহৃত হয়। এগুলো ভুলভাবে ব্যবহার করলে bug তৈরি হতে পারে। তাই পার্থক্য বোঝা খুব গুরুত্বপূর্ণ।
 
-▶️ 1. any — সবচেয়ে flexible, কিন্তু সবচেয়ে ঝুঁকিপূর্ণ
+Interface দিয়ে এভাবে advanced mapping সম্ভব নয়।
 
-টাইপ checking সম্পূর্ণ বন্ধ করে দেয়।
+🔹 Class Implements (Interface বেশি জনপ্রিয়)
+interface Shape {
+  area(): number;
+}
 
+class Circle implements Shape {
+  constructor(private radius: number) {}
+
+  area() {
+    return Math.PI * this.radius * this.radius;
+  }
+}
+
+✔ Interface vs Type — Quick Summary
+বিষয়	Interface	Type
+Extend	extends	&
+Declaration merging	✔ হ্যাঁ	❌ না
+Flexibility	Object-focused	Highly flexible
+Mapped types	সীমিত	✔ শক্তিশালী
+Class implements	বেশি ব্যবহৃত	সম্ভব
+🟦 2️⃣ any, unknown, never — পার্থক্য (Deep Explanation)
+
+TypeScript-এ এই তিনটি টাইপ তিনটি সম্পূর্ণ ভিন্ন উদ্দেশ্যে ব্যবহৃত হয়।
+
+🔹 1. any — সবচেয়ে flexible, সবচেয়ে বিপজ্জনক
 let value: any = "Hello";
 value = 10;
-value.test(); // No error (runtime এ crash হতে পারে)
+value.test(); // ❌ No compile error → runtime crash possible
 
-▶️ 2. unknown — any-এর তুলনায় নিরাপদ
 
-যেকোনো value রাখা যায় কিন্তু ব্যবহার করার আগে টাইপ চেক করতে হবে।
+সব ধরনের type checking বন্ধ
+
+autocomplete কমে যায়
+
+ভুল ধরতে কষ্ট হয়
+
+❗ যেখানে প্রয়োজন নেই, সেখানে any এড়িয়ে চলা উচিত।
+
+🔹 2. unknown — safer alternative to any
+
+যেকোনো value রাখা যায়, কিন্তু ব্যবহার করার আগে type-check করতে হয়।
 
 let data: unknown = "Hello";
 
@@ -87,16 +125,50 @@ if (typeof data === "string") {
   console.log(data.toUpperCase());
 }
 
-▶️ 3. never — এমন value যা কখনোই ঘটে না
 
-যখন কোনো function কিছু return করে না, বা সবসময় error throw করে তখন never ব্যবহার হয়।
+✔ Safety
+✔ Forced type checking
+✔ API response handle করার জন্য perfect
 
-function throwError(msg: string): never {
-  throw new Error(msg);
+🔹 3. never — এমন টাইপ যার কোন value কখনোই থাকে না
+উদাহরণ: function that always throws
+function throwError(message: string): never {
+  throw new Error(message);
 }
 
-✔️ সংক্ষেপে তুলনা
-টাইপ	কী বোঝায়	কেন ব্যবহার
-any	যেকোনো value	Unsafe, সম্ভব হলে avoid
-unknown	যেকোন value কিন্তু safe	টাইপ চেক বাধ্যতামূলক
-never	কোনো return নেই	Error-only বা unreachable code
+Exhaustive checking:
+type Status = "success" | "failed";
+
+function checkStatus(status: Status) {
+  switch (status) {
+    case "success":
+      return "OK";
+    case "failed":
+      return "Not OK";
+    default:
+      const _exhaustive: never = status; 
+  }
+}
+
+
+✔ অসম্ভব / unreachable state handle করতে ব্যবহৃত হয়।
+✔ বড় প্রকল্পে অত্যন্ত গুরুত্বপূর্ণ।
+
+✔ any vs unknown vs never — Quick Summary
+টাইপ	ধারণা	নিরাপত্তা	কখন ব্যবহার
+any	যেকোনো value	❌ Unsafe	Legacy code, quick migration
+unknown	যেকোনো value (safe)	✔ Safe	API data, dynamic input
+never	কোনো value নয়	✔ Strict	Error throw, exhaustive check
+🎯 Conclusion
+
+Interface = object-focused, extensible, clean
+
+Type = flexible, advanced, powerful
+
+any = unsafe
+
+unknown = safer dynamic type
+
+never = unreachable code guarantee
+
+TypeScript-কে শক্তিশালীভাবে ব্যবহার করতে হলে এই পার্থক্যগুলো পরিষ্কারভাবে জানা জরুরি।
