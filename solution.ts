@@ -70,44 +70,39 @@ function printBookDetails(value: Book): string {
 
 
 
+
+
 type stringOrNumber = string | number;
 
-function getUniqueValues(arr1: stringOrNumber[], arr2: stringOrNumber[]): stringOrNumber[] {
-    let result: (string | number)[] = [];
+function getUniqueValues(arr1: stringOrNumber[],arr2: stringOrNumber[]): stringOrNumber[] {
+    let result: stringOrNumber[] = [];
 
-    for (let i = 0; i < arr1.length; i++) {
-        const value = arr1[i];
+    function addValue(value: stringOrNumber) {
         let exists = false;
 
-        for (let j = 0; j < result.length; j++) {
-            if (result[j] === value) {
+        for (let i = 0; i < result.length; i++) {
+            if (result[i] === value) {
                 exists = true;
                 break;
             }
         }
 
         if (!exists) {
-            result = [...result, value];
+            result[result.length] = value; 
         }
     }
+
+    for (let i = 0; i < arr1.length; i++) {
+        addValue(arr1[i]);
+    }
+
     for (let i = 0; i < arr2.length; i++) {
-        const value = arr2[i];
-        let exists = false;
-
-        for (let j = 0; j < result.length; j++) {
-            if (result[j] === value) {
-                exists = true;
-                break;
-            }
-        }
-
-        if (!exists) {
-            result = [...result, value];
-        }
+        addValue(arr2[i]);
     }
 
     return result;
 }
+
 
 
 
